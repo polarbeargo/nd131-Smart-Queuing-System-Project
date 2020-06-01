@@ -68,18 +68,6 @@ class PersonDetect:
         p_frame = p_frame.reshape(1, *p_frame.shape)
         return p_frame
         
-#     def predict(self, image):
-#         processed_frame = self.preprocess_input(image)
-#         self.network.start_async(request_id=0,inputs={self.input_name: processed_frame})
-
-#         if self.network.requests[0].wait(-1) == 0:
-#             result = {}
-#             for i in list(self.model.outputs.keys()):
-#                 result[i] = self.network.requests[0].outputs[i]
-#             outputs = self.preprocess_outputs(result)
-#             image = self.draw_outputs(outputs, image)            
-#             return outputs, image
-
     def predict(self, image):
         processed_frame = self.preprocess_input(image)
         self.network.start_async(request_id=0,inputs={self.input_name: processed_frame})
@@ -88,20 +76,7 @@ class PersonDetect:
             conf_box = self.preprocess_outputs(outputs)
             scaled_box, image = self.draw_outputs(conf_box, image)            
             return scaled_box, image
-        
-#     def draw_outputs(self, coords, image):    
-#         for detection in coords:
-#             image_id, label, conf, x_min, y_min, x_max, y_max = detection
-#             if conf > self.threshold:
-#                 x_min = int(x_min * self.width)
-#                 x_max = int(x_max * self.width)
-#                 y_min = int(y_min * self.height)
-#                 y_max = int(y_max * self.height)
-                
-#                 cv2.rectangle(image, (x_min, y_min), (x_max, y_max), (0, 255, 0), 2)
-                
-#         return image
-    
+            
     def draw_outputs(self, coords, image):    
         scaled_box = []
         for box in coords:
@@ -112,11 +87,7 @@ class PersonDetect:
             cv2.rectangle(image, (xmin, ymin), (xmax, ymax), (0,0,255), 5)
             scaled_box.append([xmin, ymin, xmax, ymax])
         return scaled_box, image
-    
-#     def preprocess_outputs(self, outputs):
-#         output = outputs['detection_out']
-#         return output[0][0]
-    
+        
     def preprocess_outputs(self, outputs):
         conf_box = []
         for box in outputs[0][0]:
